@@ -1,0 +1,15 @@
+.search-container {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.search-container button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  /* Các thuộc tính vị trí khác tùy ý */
+}
+
+.input.form-control {
+  margin: 0 !important;
+}

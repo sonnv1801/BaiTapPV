@@ -1,0 +1,39 @@
+.order-page {
+  width: 100%;
+  display: flex;
+}
+
+.order-page .row {
+  width: 99%;
+}
+
+.oder-order {
+  width: 80%;
+  margin: 0 auto;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.order-page .order-container {
+  background: #fff;
+  width: 100%;
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 5px;
+  box-shadow: 0 3px 6px #00000029;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.title-order {
+  background: #fff;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  font-weight: 700;
+  font-size: 2rem;
+  color: red;
+  box-shadow: 0 3px 6px #00000029;
+}

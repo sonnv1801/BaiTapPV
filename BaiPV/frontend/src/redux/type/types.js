@@ -1,0 +1,22 @@
+export const LOGIN_START = "LOGIN_START";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAILED = "LOGIN_FAILED";
+
+export const START_LOADING = "START_LOADING";
+export const STOP_LOADING = "STOP_LOADING";
+export const FETCH_PRODUCT = "FETCH_PRODUCT";
+export const ADD_PRODUCT = "ADD_PRODUCT";
+export const FETCH_DETAIL = "FETCH_DETAIL";
+export const ADD_CART = "ADD_CART";
+export const BUY_PRODUCT = "BUY_PRODUCT";
+export const NUMBER_QUANTITY = "NUMBER_QUANTITY";
+export const SEARCH_PRODUCT = "SEARCH_PRODUCT";
+export const FETCH_TYPE_PRODUCT = "FETCH_TYPE_PRODUCT";
+export const ADD_TYPE = "ADD_TYPE";
+export const DELETE_TYPE = "DELETE_TYPE";
+export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
+export const DELETE_PRODUCT = "DELETE_PRODUCT";
+export const CREATE_ORDER = "CREATE_ORDER";
+export const FETCH_ORDER = "FETCH_ORDER";
+export const DELETE_ORDER = "DELETE_ORDER";
+export const DELETE_CART = "DELETE_CART";
