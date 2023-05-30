@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "./style.css";
 import { getProduct } from "../../../../redux/actions/product.action";
 import { deleteOrder, getOrder } from "../../../../redux/actions/order.action";
+import QRCode from "qrcode.react";
 
 export const HeaderOrder = () => {
   const currentUser = JSON.parse(localStorage.getItem("token"));
@@ -30,7 +31,7 @@ export const HeaderOrder = () => {
     }, 0);
   };
 
-  console.log(fliterOrder, "fliterOrder");
+  const ttorder = JSON.stringify(fliterOrder);
   return (
     <>
       {fliterOrder.length === 0 ? (
@@ -51,6 +52,19 @@ export const HeaderOrder = () => {
       ) : (
         <div className="header-order-container">
           <p>Cảm ơn bạn. Đơn hàng của bạn đã được nhận</p>
+
+          <div className="tt-dh">
+            <QRCode value={ttorder} />
+          </div>
+          <i
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              margin: "1rem 0",
+            }}
+          >
+            Thông tin đơn hàng - Mã QR-CODE
+          </i>
           {fliterOrder.map((item, index) => (
             <div className="sub-header-order" key={index}>
               <p>

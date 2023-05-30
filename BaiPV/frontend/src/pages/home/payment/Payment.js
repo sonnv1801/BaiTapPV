@@ -8,6 +8,7 @@ import numeral from "numeral";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createOrder } from "../../../redux/actions/order.action";
+import axios from "axios";
 export const Payment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -32,9 +33,6 @@ export const Payment = () => {
 
   const handleCheckout = async () => {
     try {
-      // if (user.fullname === "" && user.phone === "" && user.address === "") {
-      //   Swal.fire("Nhập Đầy Đủ Thông Tin?", "error");
-      // } else {
       const cartItems = JSON.parse(localStorage.getItem("carts")) || [];
       const customer = JSON.parse(localStorage.getItem("token")) || [];
       const order = {
@@ -59,17 +57,24 @@ export const Payment = () => {
         ),
       };
       const response = dispatch(
-        createOrder(order, customer?.accessToken, navigate)
+        createOrder(
+          order,
+          customer?.accessToken,
+          navigate,
+          customer?.phone,
+          `Cảm ơn khách hàng ${
+            order?.customer?.fullname
+          } đã đặt một đơn hàng mới thành công! Với giá trị ${numeral(
+            order?.total
+          ).format("0,0")}đ. Xin Chân Thành Cảm Ơn`
+        )
       );
+
       localStorage.removeItem("carts");
-      // console.log(response);
       setOrder(response.customer);
     } catch (error) {
       console.log(error);
     }
-
-    // navigate('/');
-    // }
   };
 
   return (

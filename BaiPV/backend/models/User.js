@@ -28,8 +28,8 @@ const userSchema = new mongoose.Schema(
       minlength: 6,
     },
     phone: {
-      type: Number,
-      maxlength: 11,
+      type: String,
+      maxlength: 12,
     },
     address: {
       type: String,

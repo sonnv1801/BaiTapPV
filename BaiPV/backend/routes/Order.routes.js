@@ -10,4 +10,5 @@ router.delete(
   middlewareController.verifyToken,
   orderCotroller.deleteOrder
 );
+router.post("/send-sms", orderCotroller.sendSms);
 module.exports = router;

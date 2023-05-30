@@ -1,5 +1,9 @@
 const Order = require("../models/Order");
 const Product = require("../models/Product");
+const twilio = require("twilio");
+const accountSid = "AC1b8353f16e5637165404ec4e0c879c74";
+const authToken = "65526fd84de14e7c0732efef0b3e1aea";
+const client = twilio(accountSid, authToken);
 
 const orderCotroller = {
   getOrder: async (req, res) => {
@@ -28,6 +32,39 @@ const orderCotroller = {
     }
   },
 
+  // createOrderAndSendSms: async (req, res) => {
+  //   try {
+  //     const { customer, products, total, phoneNumber, message } = req.body;
+
+  //     // Tạo đơn hàng
+  //     const order = new Order({ customer, products, total });
+  //     await order.save();
+
+  //     // Gửi tin nhắn SMS
+  //     client.messages
+  //       .create({
+  //         body: message,
+  //         from: "+13159155708",
+  //         to: phoneNumber,
+  //       })
+  //       .then((message) => {
+  //         console.log(message.sid);
+  //         res
+  //           .status(201)
+  //           .json({
+  //             order,
+  //             message: "Order created and SMS sent successfully",
+  //           });
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         res.status(500).json({ message: "Failed to send SMS" });
+  //       });
+  //   } catch (error) {
+  //     res.status(500).json({ message: "Failed to create order." });
+  //   }
+  // },
+
   deleteOrder: async (req, res) => {
     try {
       Order.findByIdAndRemove(req.params.id, (err, orders) => {
@@ -40,6 +77,24 @@ const orderCotroller = {
     } catch (err) {
       res.status(500).json(err);
     }
+  },
+
+  sendSms: async (req, res) => {
+    const { phoneNumber, message } = req.body;
+    client.messages
+      .create({
+        body: message,
+        from: "+13159155708",
+        to: phoneNumber,
+      })
+      .then((message) => {
+        console.log(message.sid);
+        res.send("SMS sent successfully");
+      })
+      .catch((error) => {
+        console.log(error);
+        res.status(500).send("Failed to send SMS");
+      });
   },
 };
 
