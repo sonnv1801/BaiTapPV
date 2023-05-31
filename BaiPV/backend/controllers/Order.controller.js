@@ -2,7 +2,7 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const twilio = require("twilio");
 const accountSid = "AC1b8353f16e5637165404ec4e0c879c74";
-const authToken = "65526fd84de14e7c0732efef0b3e1aea";
+const authToken = "8547deaef6e194a16779390cd376fcb2";
 const client = twilio(accountSid, authToken);
 
 const orderCotroller = {

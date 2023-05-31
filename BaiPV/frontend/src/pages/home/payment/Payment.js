@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Button from "@mui/material/Button";
 import "./style.css";
 import QRCode from "qrcode.react";
-
+import Form from "react-bootstrap/Form";
 import numeral from "numeral";
 import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
 import { createOrder } from "../../../redux/actions/order.action";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export const Payment = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("token"));
   const cart = JSON.parse(localStorage.getItem("carts"));
   const [order, setOrder] = useState(null);
-  const [error, setError] = useState(null);
 
-  const data = JSON.stringify(cart);
-
-  const renderQuantity = () => {
-    return cart?.reduce((sum, item) => {
-      return (sum += item.quantity_cart);
-    }, 0);
-  };
+  const datacart = JSON.stringify(cart);
 
   const renderAmount = () => {
     return cart?.reduce((total, item) => {
@@ -31,47 +24,72 @@ export const Payment = () => {
     }, 0);
   };
 
+  const [data, setData] = useState({
+    email: "",
+    fullname: "",
+    phone: "",
+    address: "",
+    notes: "",
+  });
+
+  const handleChange = (name) => (e) => {
+    let value = name === "image" ? e.target.files[0] : e.target.value;
+    if (name === "phone" && value.startsWith("0")) {
+      value = "+84" + value.slice(1);
+    }
+
+    setData({ ...data, [name]: value });
+  };
+
+  console.log(data.email);
   const handleCheckout = async () => {
     try {
-      const cartItems = JSON.parse(localStorage.getItem("carts")) || [];
-      const customer = JSON.parse(localStorage.getItem("token")) || [];
-      const order = {
-        customer: {
-          customerId: customer?._id,
-          fullname: customer?.fullname,
-          phone: customer?.phone,
-          email: customer?.email,
-          address: customer?.address,
-        },
-        products: cartItems?.map((item) => ({
-          productId: item?.id,
-          title: item?.title,
-          newPrice: item?.newPrice,
-          color: item?.color,
-          size: item?.size,
-          quantity: item?.quantity_cart,
-        })),
-        total: cartItems?.reduce(
-          (total, item) => total + item.newPrice * item?.quantity_cart,
-          0
-        ),
-      };
-      const response = dispatch(
-        createOrder(
-          order,
-          customer?.accessToken,
-          navigate,
-          customer?.phone,
-          `Cảm ơn khách hàng ${
-            order?.customer?.fullname
-          } đã đặt một đơn hàng mới thành công! Với giá trị ${numeral(
-            order?.total
-          ).format("0,0")}đ. Xin Chân Thành Cảm Ơn`
-        )
-      );
+      if (data.fullname === "" && data.phone === "" && data.address === "") {
+        toast.warning("Nhập đầy đủ!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        const cartItems = JSON.parse(localStorage.getItem("carts")) || [];
+        const customer = JSON.parse(localStorage.getItem("token")) || [];
+        const order = {
+          customer: {
+            customerId: customer?._id,
+            fullname: data?.fullname,
+            phone: data?.phone,
+            email: data?.email,
+            address: data?.address,
+            notes: data?.notes,
+          },
+          products: cartItems?.map((item) => ({
+            productId: item?.id,
+            title: item?.title,
+            newPrice: item?.newPrice,
+            color: item?.color,
+            size: item?.size,
+            quantity: item?.quantity_cart,
+          })),
+          total: cartItems?.reduce(
+            (total, item) => total + item.newPrice * item?.quantity_cart,
+            0
+          ),
+        };
+        const response = dispatch(
+          createOrder(
+            order,
+            customer?.accessToken,
+            navigate,
+            customer?.phone,
+            `Cảm ơn khách hàng ${
+              order?.customer?.fullname
+            } đã đặt một đơn hàng mới thành công! Với giá trị ${numeral(
+              order?.total
+            ).format("0,0")}đ. Xin Chân Thành Cảm Ơn`
+          )
+        );
 
-      localStorage.removeItem("carts");
-      setOrder(response.customer);
+        localStorage.removeItem("carts");
+        setOrder(response.customer);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -79,41 +97,51 @@ export const Payment = () => {
 
   return (
     <div className="container">
-      <div className="body-payment">
-        <h1>Thanh Toán</h1>
-      </div>
       <div className="row">
         <div className="col-6">
-          <p className="tt-kh">Thông tin khách hàng</p>
-          <div className="row">
-            <div className="col-6">
-              <h4>Khách hàng</h4>
-            </div>
-            <div className="col-6">
-              <h4>{user.fullname}</h4>
-            </div>
-            <div className="col-6">
-              <h4>Địa chỉ</h4>
-            </div>
-            <div className="col-6">
-              <h4>{user.address}</h4>
-            </div>
-            <div className="col-6">
-              <h4>Email</h4>
-            </div>
-            <div className="col-6">
-              <h4>{user.email}</h4>
-            </div>
-            <div className="col-6">
-              <h4>Số điện thoại</h4>
-            </div>
-            <div className="col-6">
-              <h4>{user.phone}</h4>
+          <div className="body-payment">
+            <h1>Thanh Toán</h1>
+          </div>
+          <div className="body-left-payment">
+            <div className="body-payment">
+              <div className="infomation-users">
+                <Form.Group className="formgroup-body">
+                  <Form.Label>Email: </Form.Label>
+                  <Form.Control
+                    type="email"
+                    required
+                    onChange={handleChange("email")}
+                  />
+                  <Form.Label>Họ và tên:* </Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    onChange={handleChange("fullname")}
+                  />
+                  <Form.Label>Số điện thoại:* </Form.Label>
+                  <Form.Control
+                    type="number"
+                    required
+                    onChange={handleChange("phone")}
+                  />
+
+                  <Form.Label>Địa chỉ:* </Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    onChange={handleChange("address")}
+                  />
+                  <Form.Label>Ghi Chú: </Form.Label>
+                  <Form.Control type="text" onChange={handleChange("notes")} />
+                </Form.Group>
+              </div>
             </div>
           </div>
-          <p className="title-ttdh">Thông tin đơn hàng</p>
+          <div className="body-payment">
+            <h1>Thông tin đơn hàng - QRCode</h1>
+          </div>
           <div className="tt-dh">
-            <QRCode value={data} />
+            <QRCode value={datacart} />
           </div>
         </div>
         <div className="col-6">
@@ -124,17 +152,8 @@ export const Payment = () => {
               aria-describedby="keep-mounted-modal-description"
             >
               <div id="container-carts-payment">
-                <div
-                  id="keep-mounted-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    textAlign: "center",
-                    color: "red",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Sản phẩm đã mua
+                <div className="body-payment">
+                  <h1>Sản phẩm đã mua</h1>
                 </div>
                 {cart?.length === 0 ? (
                   <div id="cart-empty">
